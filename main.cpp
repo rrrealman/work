@@ -11,40 +11,19 @@
 #include <QGst/Utils/ApplicationSource>
 #include <QGst/Event>
 
-class MySink : public QGst::Utils::ApplicationSink
+class Recorder : public QCoreApplication
 {
 public:
-    MySink(QGst::Utils::ApplicationSource *src) : QGst::Utils::ApplicationSink(), m_src(src) {}
-protected:
-    virtual void eos()
-    {
-        m_src->endOfStream();
-    }
-    virtual QGst::FlowReturn newSample()
-    {
-        QGst::SamplePtr sample = pullSample();
-        m_src->pushBuffer(sample->buffer());
-        return QGst::FlowOk;
-    }
-private:
-    QGst::Utils::ApplicationSource *m_src;
-};
-
-class Player : public QCoreApplication
-{
-public:
-    Player(int argc, char **argv);
-    ~Player();
+    Recorder(int argc, char **argv);
+    ~Recorder();
 private:
     void onBusMessage(const QGst::MessagePtr & message);
 private:
-    QGst::Utils::ApplicationSource m_src;
-    MySink m_sink;
-    QGst::PipelinePtr pipeline1;
+    QGst::PipelinePtr pipeline1, pipeline2, pipeline3;
 };
 
-Player::Player(int argc, char **argv)
-    : QCoreApplication(argc, argv), m_sink(&m_src)
+Recorder::Recorder(int argc, char **argv)
+    : QCoreApplication(argc, argv)
 {
     QGst::init(&argc, &argv);
     if (argc <= 1)
@@ -53,40 +32,51 @@ Player::Player(int argc, char **argv)
         std::exit(1);
     }
 
-    const char *caps = "video/x-h264, format=(string)avc,"
-                       "width=(int)360, height=(int)360";
-
-    /* source pipeline */
+    /* source pipeline 1 */
     QString pipe1Descr = QString("rtspsrc location=\"%1\" ! "
                                  "rtph264depay ! "
                                  "mpegtsmux ! "
                                  "filesink location=\"%2\"").arg(argv[1], argv[2]);
 
-//    QString pipe1Descr = QString("rtspsrc location=\"%1\" ! "
-//                                 "rtph264depay ! "
-//                                 "h264parse ! "
-//                                 "avdec_h264 ! "
-//                                 "videoconvert ! "
-//                                 "videoscale ! "
-//                                 "xvimagesink").arg(argv[1]); //qt5videosink
+    QString pipe2Descr = QString("rtspsrc location=\"%1\" ! "
+                                 "rtph264depay ! "
+                                 "mpegtsmux ! "
+                                 "filesink location=\"%2\"").arg(argv[3], argv[4]);
+
+    QString pipe3Descr = QString("rtspsrc location=\"%1\" ! "
+                                 "rtph264depay ! "
+                                 "mpegtsmux ! "
+                                 "filesink location=\"%2\"").arg(argv[5], argv[6]);
 
     pipeline1 = QGst::Parse::launch(pipe1Descr).dynamicCast<QGst::Pipeline>();
-    m_sink.setElement(pipeline1->getElementByName("mysink"));
-    QGlib::connect(pipeline1->bus(), "message::error", this, &Player::onBusMessage);
+    QGlib::connect(pipeline1->bus(), "message::error", this, &Recorder::onBusMessage);
     pipeline1->bus()->addSignalWatch();
+
+    pipeline2 = QGst::Parse::launch(pipe2Descr).dynamicCast<QGst::Pipeline>();
+    QGlib::connect(pipeline2->bus(), "message::error", this, &Recorder::onBusMessage);
+    pipeline2->bus()->addSignalWatch();
+
+    pipeline3 = QGst::Parse::launch(pipe3Descr).dynamicCast<QGst::Pipeline>();
+    QGlib::connect(pipeline3->bus(), "message::error", this, &Recorder::onBusMessage);
+    pipeline3->bus()->addSignalWatch();
 
     /* start playing */
     pipeline1->setState(QGst::StatePlaying);
+    pipeline2->setState(QGst::StatePlaying);
+    pipeline3->setState(QGst::StatePlaying);
 }
 
-Player::~Player()
+Recorder::~Recorder()
 {
-//    pipeline1->sendEvent(QGst::EosEvent::create());
     pipeline1->setState(QGst::StateNull);
     pipeline1.clear();
+    pipeline2->setState(QGst::StateNull);
+    pipeline2.clear();
+    pipeline3->setState(QGst::StateNull);
+    pipeline3.clear();
 }
 
-void Player::onBusMessage(const QGst::MessagePtr & message)
+void Recorder::onBusMessage(const QGst::MessagePtr & message)
 {
     switch (message->type()) {
         case QGst::MessageEos:
@@ -102,7 +92,6 @@ void Player::onBusMessage(const QGst::MessagePtr & message)
 
 int main(int argc, char **argv)
 {
-    Player p(argc, argv);
-
-    return p.exec();
+    Recorder r(argc, argv);
+    return r.exec();
 }
