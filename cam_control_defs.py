@@ -72,6 +72,48 @@ class DictAttr(dict):
 	def __init__(self, *args, **kwargs):
 		super(DictAttr, self).__init__(dict.fromkeys(args), **kwargs)
 
+class Request(DictAttr):
+	def __init__(self, params = list(), path = "", ip = ""):
+		self.params = self.__make_list__(params)
+		self.path   = path
+		self.ip     = ip
+	def is_valid(self, param):
+		if isinstance(param, tuple) and len(param) == 2:
+			return True
+		return False
+	def __make_list__(self, params):
+		if self.is_valid(params):
+			v_list = list([params])
+		elif isinstance(params, list):
+			v_list = list(params)
+		elif isinstance(params, dict):
+			v_list = list(params.items())
+		else:
+			v_list = []
+		for param in v_list:
+			if not self.is_valid(param):
+				v_list.remove(param)
+		return v_list
+	def __iadd__(self, add_params):
+		add_list = self.__make_list__(add_params)
+		for param in add_list:
+			self-=param
+			self.params.append(param)
+		return self
+	def __isub__(self, sub_params):
+		sub_list = self.__make_list__(sub_params)
+		for param in sub_list:
+			while True:
+				try:
+					self.params.remove(param)
+				except:
+					break
+		return self
+	def __repr__(self):
+		slash  = "/" if self.path != "" else ""
+		q_mark = "?" if self.params != [] else ""
+		return "http://%s%s%s%s%s" % (self.ip, slash, self.path, q_mark, urlencode(self.params))
+
 class Camera(DictAttr):
 	"""Describes remote camera"""
 	def __init__(self):
@@ -113,11 +155,31 @@ class Camera(DictAttr):
 			if hasattr(self.video, setting):
 				setattr(self.video, setting, response[setting])
 
+	def __add_direction__(self, request, direction):
+		if "params" not in request.keys():
+			request["params"] = list()
+		req_par = request["params"]
+		set_req = get_req = True
+		while set_req or get_req:
+			try:
+				IPop = req_par.remove(("app", "get"))
+			except ValueError:
+				get_req = False
+			try:
+				IPop = req_par.remove(("app", "set"))
+			except ValueError:
+				set_req = False
+		return req_par.append(direction)
+
 	#### Get camera information ####
 	def get_req(self, request):
 		'''Gets settings from given request'''
 		self.__print_debug__("Get request starts.")
-		request["params"].append(("app", "get"))
+		self.__add_direction__(request, ("app", "get"))
+		# try:
+		# 	request["params"].append(("app", "get"))
+		# except KeyError:
+		# 	request["params"] = list(tuple("app", "get"))
 		response = self.send_request(**request)
 		try:
 			if response["res"][0]!="200":
