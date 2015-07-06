@@ -13,14 +13,14 @@ class CameraController(DictAttr):
 			self.file = conf_file
 		else:
 			self.file = ""
-		# self.ready = self.discover_cams()
+		self.ready = self.discover_cams()
 		self.ready = True
 		self.video = DictAttr(
 			"video_enc1_res",# default is "2048x1536"
 			"video_enc1_fps",# default is 30 fps
 			"video_enc1_bitrate",# default is 10000 kbps !!! 10000 doesn't set up, there are only 5000 kbps and 12000 kbps
 			"video_enc1_ratecontrol")# default is "vbr" (variable bitrate)
-		# self.read_tgt_stgs() 
+		self.read_tgt_stgs() 
 		self.video.video_enc1_res = "1920x1440"
 		print self.video
 		print self
@@ -76,7 +76,8 @@ class CameraController(DictAttr):
 if __name__ == "__main__":
 	# Realize command line args
 	cc = CameraController()
-	cc.cams[0].set_up_default(conf_file = "default.conf", debug = True)
-	cc.read_cams_settings()
-	print cc.cams[0].host.rtsp_port
-	print cc.cams[0].host.rtp_addr
+	print cc
+	# cc.cams[0].set_up_default(conf_file = "default.conf", debug = True)
+	# cc.read_cams_settings()
+	# print cc.cams[0].host.rtsp_port
+	# print cc.cams[0].host.rtp_addr
