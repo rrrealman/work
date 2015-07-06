@@ -1,81 +1,82 @@
 #!/usr/bin/python
-from cam_control_defs import *
 from socket import *
-# from grab import grab
+from struct import unpack
+from os.path import exists
 
-from struct import *
+from Discovery import DiscoveryMessageStruct, CMD_GET_INF_REQ, RECV_ADDR, SEND_ADDR, MSG_FORMAT
+from cam_control_defs import Camera, DictAttr, __translate__
 
-class CameraController(object):
-
-	def __init__(self):
-		self.cams=[]
-		self.discover_cams()
-		if len(self.cams) == 0:
-			self.Ready = False
+class CameraController(DictAttr):
+	def __init__(self, conf_file=""):
+		self.cams = []
+		if exists(conf_file):
+			self.file = conf_file
 		else:
-			self.Ready = True
+			self.file = ""
+		# self.ready = self.discover_cams()
+		self.ready = True
+		self.video = DictAttr(
+			"video_enc1_res",# default is "2048x1536"
+			"video_enc1_fps",# default is 30 fps
+			"video_enc1_bitrate",# default is 10000 kbps !!! 10000 doesn't set up, there are only 5000 kbps and 12000 kbps
+			"video_enc1_ratecontrol")# default is "vbr" (variable bitrate)
+		# self.read_tgt_stgs() 
+		self.video.video_enc1_res = "1920x1440"
+		print self.video
+		print self
 
+	def __str__(self):
+		return "CameraController instance with %d cameras is %s." % (len(self.cams), __translate__(self.ready))
+	def read_tgt_stgs(self):
+		for cam in self.cams:
+			cam.create_req(path = "video/video.php")
+			resp = cam.get_req()
+			for stg in resp.keys():
+				if stg in self.video.keys():
+					if self.video[stg] is None or self.video[stg] == resp[stg]:
+						self.video[stg] = resp[stg]
+					else:
+						self.ready = False
 	def setup_cams(self):
-		'''Sets up cameras of CameraController object'''
+		res = True
 		for cam in self.cams:
-			cam.setup()
-
-	def read_cams_settings(self):
-		'''Updates settings of all cameras in CameraController'''
-		for cam in self.cams:
-			cam.read_settings()
-
-#### Debugging section ####
-	# def print_struct(self, struct, prefix):
-	# 	'''Prints given C-styled struct in human-friendly view'''
-	# 	for field_name, field_type in struct._fields_:
-	# 		print "%s%s: %s" % (prefix, field_name, getattr(struct, field_name))
-
-	# def print_cam(self, cam):
-	# 	'''Prints all settings of given camera'''
-	# 	print "\nCamera IP: %s" % cam.host.ip
-	# 	self.print_struct(cam.host, "\t")
-	# 	for setting_name, setting_type in cam.camera._fields_:
-	# 		self.print_struct(getattr(cam.camera, setting_name), "\t")
-
-	# def print_cams(self):
-	# 	'''Prints settings of all cameras of CameraController object'''
-	# 	for cam in self.cams:
-	# 		self.print_cam(cam)
-
-#### Class init section ####
-	def socket_udp_init(self, timeout=0):
-		'''Initializes UDP-socket to discover cameras in network'''
+			cam.set(self.__conf_file__())
+			print cam
+			res &= cam.ready
+		return res
+	def __conf_file__(self):
+		try:
+			file_inst = open(self.file, 'r+')
+		except IOError:
+			return []
+		print "Configuration file: %s" % self.file
+		lines = file_inst.readlines()
+		file_inst.close()
+		return lines
+	def __socket_udp_init__(self, timeout=0):
 		socket_udp = socket(AF_INET, SOCK_DGRAM)
 		socket_udp.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 		socket_udp.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
 		socket_udp.bind(RECV_ADDR)
-
 		if timeout != 0:
 			socket_udp.settimeout(timeout)
-		
 		return socket_udp
-
 	def discover_cams(self):
-		'''Discovers available cameras in network'''
 		msg = DiscoveryMessageStruct(CMD_GET_INF_REQ)
-		socket_udp = self.socket_udp_init(5)
+		socket_udp = self.__socket_udp_init__(5)
 		socket_udp.sendto(msg, SEND_ADDR) # add condition data is not transmitted
 		while True:
 			try:
 				dm = DiscoveryMessageStruct(*unpack(MSG_FORMAT, socket_udp.recvfrom(1024)[0]))
-				c=Camera()
-				c.host = dm
-				self.cams.append(c)
+				self.cams.append(Camera(ip=dm.ip))
 			except timeout:
 				break
-		self.read_cams_settings()
-		return len(self.cams)
-#### End class ####
+		return self.setup_cams()
 
 if __name__ == "__main__":
+	# Realize command line args
 	cc = CameraController()
-	cc.cams[0].set_up_default(file_conf = "default.conf", debug = True)
+	cc.cams[0].set_up_default(conf_file = "default.conf", debug = True)
 	cc.read_cams_settings()
 	print cc.cams[0].host.rtsp_port
 	print cc.cams[0].host.rtp_addr

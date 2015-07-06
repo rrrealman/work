@@ -5,108 +5,109 @@ def pp(req):
 def grab(c):
 	get = {"app":"get"}
 	print "video/video.php"
-	pp(c.send_request("video/video.php", **get))
+	pp(c.get_req(dict(path="video/video.php")))
 	
 	print "\naudio/audio.php"
-	pp(c.send_request("audio/audio.php", **get))
+	pp(c.get_req(dict(path="audio/audio.php")))
 	
 	print "\nvideo/image.php"
 	print "group: basic"
-	pp( c.send_request("video/image.php", **dict(group="basic", **get)))
+	path="video/image.php"
+	pp( c.get_req(**dict(path=path, params=[(group, "basic")])))
 	print "group: osd"
-	pp( c.send_request("video/image.php", **dict(group="osd", **get)))
+	pp( c.get_req(**dict(path=path, group="osd")))
 	print "group: ae"
-	pp( c.send_request("video/image.php", **dict(group="ae", **get)))
+	pp( c.get_req(**dict(path=path, group="ae")))
 	print "group: awb"
-	pp( c.send_request("video/image.php", **dict(group="awb", **get)))
+	pp( c.get_req(**dict(path=path, group="awb")))
 	print "group: af"
-	pp( c.send_request("video/image.php", **dict(group="af", **get)))
+	pp( c.get_req(**dict(path=path, group="af")))
 	print "group: dnn"
-	pp( c.send_request("video/image.php", **dict(group="dnn", **get)))
+	pp( c.get_req(**dict(path=path, group="dnn")))
 	print "group: wdr"
-	pp( c.send_request("video/image.php", **dict(group="wdr", **get)))
+	pp( c.get_req( **dict(path=path, group="wdr")))
 	print "group: blc"
-	pp( c.send_request("video/image.php", **dict(group="blc", **get)))
+	pp( c.get_req(**dict(path=path, group="blc")))
 	print "group: nr"
-	pp( c.send_request("video/image.php", **dict(group="nr", **get)))
+	pp( c.get_req(**dict(path=path, group="nr")))
 	print "group: corridor"
-	pp( c.send_request("video/image.php", **dict(group="corridor", **get)))
+	pp( c.get_req(**dict(path=path, group="corridor")))
 	print "group: ldc"
-	pp( c.send_request("video/image.php", **dict(group="ldc", **get)))
+	pp( c.get_req(**dict(path=path, group="ldc")))
 	
 	print "\nvideo/pmask.php"
-	pp( c.send_request("video/pmask.php", **get))
+	pp(c.get_req(dict(path="video/pmask.php")))
 	
 	print "\nvideo/digital_zoom.php"
-	pp( c.send_request("video/digital_zoom.php", **get))
+	pp( c.get_req(dict(path="video/digital_zoom.php")))
 	
 	print "\nanalytic/dis.php"
-	pp( c.send_request("analytic/dis.php", **get))
+	pp( c.get_req(dict(path="analytic/dis.php")))
 	
 	print "\nanalytic/tamper.php"
-	pp( c.send_request("analytic/tamper.php", **get))
+	pp( c.get_req(dict(path="analytic/tamper.php")))
 	
 	print "\nevent/motion.php"
-	pp( c.send_request("event/motion.php", **get))
+	pp( c.get_req("event/motion.php"))
 	
 	print "\nevent/event_trigger.php"
 	print "group: alarmin"
-	pp( c.send_request("event/event_trigger.php", **dict(group="alarmin", **get)))
+	pp( c.get_req("event/event_trigger.php", **dict(group="alarmin")))
 	print "group: onboot"
-	pp( c.send_request("event/event_trigger.php", **dict(group="onboot", **get)))
+	pp( c.get_req("event/event_trigger.php", **dict(group="onboot")))
 	print "group: trigger"
-	pp( c.send_request("event/event_trigger.php", **dict(group="trigger", **get)))
+	pp( c.get_req("event/event_trigger.php", **dict(group="trigger")))
 	print "group: netloss"
-	pp( c.send_request("event/event_trigger.php", **dict(group="netloss", **get)))
+	pp( c.get_req("event/event_trigger.php", **dict(group="netloss")))
 	
 	print "\nevent/event_action.php"
 	print "group: alarmout"
-	pp( c.send_request("event/event_action.php", **dict(group="alarmout", **get)))
+	pp( c.get_req("event/event_action.php", **dict(group="alarmout")))
 	print "group: email"
-	pp( c.send_request("event/event_action.php", **dict(group="email", **get)))
+	pp( c.get_req("event/event_action.php", **dict(group="email")))
 	print "group: ftp"
-	pp( c.send_request("event/event_action.php", **dict(group="ftp", **get)))
+	pp( c.get_req("event/event_action.php", **dict(group="ftp")))
 	print "group: video"
-	pp( c.send_request("event/event_action.php", **dict(group="video", **get)))
+	pp( c.get_req("event/event_action.php", **dict(group="video")))
 	print "group: preset"
-	pp( c.send_request("event/event_action.php", **dict(group="preset", **get)))
+	pp( c.get_req("event/event_action.php", **dict(group="preset")))
 	
 	print "\nevent/event_rule.php"
-	pp( c.send_request("event/event_rule.php", **get))
+	pp( c.get_req("event/event_rule.php"))
 	
 	print "\nsystem/security.php"
 	print "group: user"
-	pp( c.send_request("system/security.php", **dict(group="user", **get)))
+	pp( c.get_req("system/security.php", **dict(group="user")))
 	print "group: https"
-	pp( c.send_request("system/security.php", **dict(group="https", **get)))
+	pp( c.get_req("system/security.php", **dict(group="https")))
 	print "group: filter"
-	pp( c.send_request("system/security.php", **dict(group="filter", **get)))
+	pp( c.get_req("system/security.php", **dict(group="filter")))
 	print "group: onvif"
-	pp( c.send_request("system/security.php", **dict(group="onvif", **get)))
+	pp( c.get_req("system/security.php", **dict(group="onvif")))
 	
 	print "\nsystem/time.php"
-	pp( c.send_request("system/time.php", **get))
+	pp( c.get_req("system/time.php"))
 	
 	print "\nsystem/network.php"
 	print "group: tcpip"
-	pp( c.send_request("system/network.php", **dict(group="tcpip", **get)))
+	pp( c.get_req("system/network.php", **dict(group="tcpip")))
 	print "group: ddns"
-	pp( c.send_request("system/network.php", **dict(group="ddns", **get)))
+	pp( c.get_req("system/network.php", **dict(group="ddns")))
 	print "group: rtp"
-	pp( c.send_request("system/network.php", **dict(group="rtp", **get)))
+	pp( c.get_req("system/network.php", **dict(group="rtp")))
 	print "group: upnp"
-	pp( c.send_request("system/network.php", **dict(group="upnp", **get)))
+	pp( c.get_req("system/network.php", **dict(group="upnp")))
 	print "group: zeroconf"
-	pp( c.send_request("system/network.php", **dict(group="zeroconf", **get)))
+	pp( c.get_req("system/network.php", **dict(group="zeroconf")))
 	
 	print "\nptz/preset.php"
-	pp( c.send_request("ptz/preset.php", **get))
+	pp( c.get_req("ptz/preset.php"))
 	
 	print "\nrecord/record.php"
 	print "group: record"
-	pp( c.send_request("record/record.php", **dict(group="record", **get)))
+	pp( c.get_req("record/record.php", **dict(group="record")))
 	print "group: storage"
-	pp( c.send_request("record/record.php", **dict(group="storage", **get)))
+	pp( c.get_req("record/record.php", **dict(group="storage")))
 	
 	print "\nconfig.txt"
-	pp( c.send_request("config.txt"))
+	pp( c.get_req("config.txt"))

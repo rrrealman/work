@@ -1,4 +1,4 @@
-#!//usr/bin/python
+#!/usr/bin/python
 
 # Menubar:
 # 	Path to config file
@@ -24,12 +24,7 @@ class MainWindow(wx.Frame):
 		self.InitUI()
 		self.Center(wx.CENTER_ON_SCREEN)
 		self.Show(True)
-
-		self.cc = CameraController()
-		if self.cc.Ready:
-			self.ReadyCameras.SetValue("Cameras are ready")
-		else:
-			self.ReadyCameras.SetValue("Cameras are not ready")
+		self.CCInit()
 
 	def InitUI(self):
 
@@ -38,7 +33,7 @@ class MainWindow(wx.Frame):
 		panel   = wx.Panel(self)
 
 		lbl_cf  = wx.StaticText(panel, label = "Configuration file: ")
-		lbl_pcf = wx.StaticText(panel, label = "/path/to/file.conf")
+		lbl_pcf = wx.StaticText(panel, label = "path/to/file.conf")
 		cf_hbox = wx.BoxSizer(wx.HORIZONTAL)
 		cf_hbox.AddMany([(lbl_cf), (lbl_pcf)])
 
@@ -50,11 +45,10 @@ class MainWindow(wx.Frame):
 		lbl_rc  = wx.StaticText(panel, label = "Rate control")
 		res_values = ["2048x1536", "1920x1440", "1600x1200", "1280x960", "800x600", "640x480", "320x240"]
 		fps_values = ["30", "25", "20", "15", "12", "10", "6", "5", "4", "3", "2", "1"]
-		# br_values  = ["br1","br2"]
 		rc_values  = ["cbr", "vbr"]
-		self.cb_res = wx.ComboBox(panel, size = (120, -1), choices = res_values, value = res_values[0], style = wx.CB_READONLY) # + wx.SpinButton by implementing TextCtrlSpinning class
+		self.cb_res = wx.ComboBox(panel, size = (120, -1), choices = res_values, style = wx.CB_READONLY) # + wx.SpinButton by implementing TextCtrlSpinning class
 		self.cb_fps = wx.ComboBox(panel, size = (120, -1), choices = fps_values, style = wx.CB_READONLY)
-		self.sc_br  = wx.SpinCtrl(panel, size = (120, -1), value = "200", min = 100, max = 12000)
+		self.sc_br  = wx.SpinCtrl(panel, size = (120, -1), min = 100, max = 12000)
 		self.cb_rc  = wx.ComboBox(panel, size = (120, -1), choices = rc_values, style = wx.CB_READONLY)
 		fgs = wx.FlexGridSizer(4, 2, 9, 15)
 		fgs.AddMany([(lbl_res, 0, wx.ALIGN_CENTER_VERTICAL), (self.cb_res, 1, wx.EXPAND),
@@ -86,6 +80,17 @@ class MainWindow(wx.Frame):
 		self.SetMenuBar(menubar)
 
 		self.CreateStatusBar()
+
+	def CCInit(self):
+		self.cc = CameraController(conf_file = "default.conf")
+		self.cb_res.SetValue(self.cc.video.video_enc1_res)
+		# self.cb_fps   self.cc.video.video_enc1_fps
+		# self.sc_br    self.cc.video.video_enc1_bitrate
+		# self.cb_rc    self.cc.video.video_enc1_ratecontrol
+		if self.cc.ready:
+			self.ReadyCameras.SetValue("Cameras are ready")
+		else:
+			self.ReadyCameras.SetValue("Cameras are not ready")
 
 	def OnSetButton(self, event):
 		pass
