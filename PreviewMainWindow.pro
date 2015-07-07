@@ -13,8 +13,17 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    startform.cpp \
+    shareform.cpp \
+    optionsform.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    startform.h \
+    shareform.h \
+    optionsform.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    startform.ui \
+    shareform.ui \
+    optionsform.ui

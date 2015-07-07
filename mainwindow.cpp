@@ -22,21 +22,41 @@ void MainWindow::StartClicked()
 {
     if (!this->Playing)
     {
-        this->Playing = true;
-        ui->StartButton->setText("Stop");
+        StartForm* pStartForm = new StartForm;//init startform!
+        if (pStartForm->exec() == QDialog::Accepted)
+        {
+//            this->params = pStartForm->GetParams();
+            // applying changes in main window
+            this->Playing = true;
+            ui->StartButton->setText("Stop");
+            ui->ShareButton->setEnabled(false);
+            ui->OptionsButton->setEnabled(false);
+        }
+        delete pStartForm;
     }
     else
     {
         this->Playing = false;
         ui->StartButton->setText("Start");
+        ui->ShareButton->setEnabled(true);
+        ui->OptionsButton->setEnabled(true);
     }
 }
-
 void MainWindow::ShareClicked()
 {
-    qDebug()<<"Share clicked";
+    ShareForm* pShareForm = new ShareForm;
+    if (pShareForm->exec() == QDialog::Accepted)
+    {
+        // applying changes in main window
+    }
+    delete pShareForm;
 }
 void MainWindow::OptionsClicked()
 {
-    qDebug()<<"Options clicked";
+    OptionsForm* pOptionsForm = new OptionsForm;
+    if (pOptionsForm->exec() == QDialog::Accepted)
+    {
+        // applying changes in main window
+    }
+    delete pOptionsForm;
 }
