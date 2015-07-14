@@ -2,12 +2,15 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSplashScreen>
+#include <QThread>
+#include <QLabel>
 #include "startform.h"
-#include "shareform.h"
 #include "optionsform.h"
+#include "filesettings.h"
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
 class MainWindow : public QMainWindow
@@ -23,10 +26,15 @@ private:
     bool Playing;
     QString params;
 
+    void PlayingMenu();
+
 private slots:
-    void StartClicked();
-    void ShareClicked();
-    void OptionsClicked();
+    void StartTriggered();
+    void CameraSettingsTriggered();
+    void FileSettingsTriggered();
+    void Find_cameraTriggered();
+    void HelpTriggered();
+    void AboutTriggered();
 };
 
 #endif // MAINWINDOW_H

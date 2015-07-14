@@ -3,6 +3,11 @@
 
 #include <QDialog>
 #include <QFileDialog>
+#include "QSignalMapper"
+
+#define HOST 0
+#define YT   1
+#define US   2
 
 namespace Ui {
 class StartForm;
@@ -21,9 +26,13 @@ public:
 private:
     Ui::StartForm *ui;
     QString Params;
+    QSignalMapper *RadioButtons;
 
 private slots:
     void SpecifyFile();
+    void RBClicked(int RB);
+//    void HideAllParams();
+//    void VisibleHostParams(bool visible);
 };
 
 #endif // STARTFORM_H

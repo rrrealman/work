@@ -15,15 +15,21 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     startform.cpp \
-    shareform.cpp \
-    optionsform.cpp
+    optionsform.cpp \
+    filesettings.cpp \
+    outputstream.cpp
 
 HEADERS  += mainwindow.h \
     startform.h \
-    shareform.h \
-    optionsform.h
+    optionsform.h \
+    filesettings.h \
+    outputstream.h \
+    splashscreen.h
 
 FORMS    += mainwindow.ui \
     startform.ui \
-    shareform.ui \
-    optionsform.ui
+    optionsform.ui \
+    filesettings.ui
+
+OTHER_FILES += \
+    splash.png
