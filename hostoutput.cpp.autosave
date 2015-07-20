@@ -1,0 +1,65 @@
+#include "hostoutput.h"
+#include "ui_hostoutput_form.h"
+
+// TEST
+#include <QDebug>
+// END TEST
+
+#define HOST_GR_NAME QString("host")
+#define TGT_DIR_NAME QString("targetDir")
+#define URL_LST_NAME QString("URLList")
+
+hostOutput::hostOutput()
+{
+    readSettings();
+}
+
+hostOutput::~hostOutput()
+{
+    this->varParamsWidget = createVarParamsWidget();
+    writeSettings();
+}
+
+QWidget* hostOutput::getVarParamsWidget()
+{
+    return varParamsWidget;
+}
+
+QWidget* hostOutput::createVarParamsWidget()
+{
+    ui_hostoutput_form
+}
+
+QString hostOutput::getShortName()
+{
+    return QString("");
+}
+QString hostOutput::getFullName()
+{
+    return QString("");
+}
+QString hostOutput::getIntName()
+{
+    return QString("");
+}
+
+QPixmap* hostOutput::getLogo()
+{
+    return NULL;
+}
+
+void hostOutput::readSettings()
+{
+    QSettings *settings = getApplicationSettings();
+    settings->beginGroup(HOST_GR_NAME);
+        this->targetDir = settings->value(TGT_DIR_NAME, "/~").toString();
+        this->URLList = settings->value(URL_LST_NAME).toList();
+}
+
+void hostOutput::writeSettings()
+{
+    QSettings *settings = getApplicationSettings();
+    settings->beginGroup(HOST_GR_NAME);
+//        settings->setValue(TGT_DIR_NAME, this->targetDir);
+//        settings->setValue(URL_LST_NAME, this->URLList);
+}

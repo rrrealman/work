@@ -8,6 +8,7 @@
 #include "startform.h"
 #include "optionsform.h"
 #include "filesettings.h"
+#include "outputstreamobject.h"
 
 namespace Ui {
     class MainWindow;

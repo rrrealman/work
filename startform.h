@@ -2,12 +2,10 @@
 #define STARTFORM_H
 
 #include <QDialog>
-#include <QFileDialog>
-#include "QSignalMapper"
-
-#define HOST 0
-#define YT   1
-#define US   2
+#include <QLayout>
+#include <QRadioButton>
+#include <QSignalMapper>
+#include "output.h"
 
 namespace Ui {
 class StartForm;
@@ -20,18 +18,17 @@ class StartForm : public QDialog
 public:
     explicit StartForm(QWidget *parent = 0);
     ~StartForm();
-    char GetMode() const;
-    QString GetParams() const;
+//    char GetMode() const;
+//    QString GetParams() const;
 
 private:
     Ui::StartForm *ui;
-    QString Params;
-    QSignalMapper *RadioButtons;
+    Output* output;
+//    QString Params;
 
 private slots:
-    void SpecifyFile();
     void RBClicked(int RB);
-//    void HideAllParams();
+    void HideAll();
 //    void VisibleHostParams(bool visible);
 };
 

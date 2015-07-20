@@ -17,19 +17,34 @@ SOURCES += main.cpp\
     startform.cpp \
     optionsform.cpp \
     filesettings.cpp \
-    outputstream.cpp
+    outputstreamobject.cpp \
+    output.cpp \
+    youtubeoutput.cpp \
+    ustreamoutput.cpp \
+    hostoutput.cpp \
+    application.cpp \
+    hostoutputvarparams.cpp \
+    youtubeoutputvarparams.cpp
 
 HEADERS  += mainwindow.h \
     startform.h \
     optionsform.h \
     filesettings.h \
-    outputstream.h \
-    splashscreen.h
+    splashscreen.h \
+    outputstreamobject.h \
+    output.h \
+    youtubeoutput.h \
+    ustreamoutput.h \
+    hostoutput.h \
+    application.h \
+    hostoutputvarparams.h \
+    youtubeoutputvarparams.h
 
 FORMS    += mainwindow.ui \
     startform.ui \
     optionsform.ui \
-    filesettings.ui
+    filesettings.ui \
+    hostoutputvarparams.ui \
+    youtubeoutputvarparams.ui
 
-OTHER_FILES += \
-    splash.png
+OTHER_FILES +=

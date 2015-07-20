@@ -3,7 +3,7 @@
 
 #include <QDesktopWidget>
 #include <QSplashScreen>
-//#include <QThread>
+#include <QTime>
 
 #define SPLASH_IMG     QString("splash.png")
 #define LOW_RES_DESK   QSize(1280, 720)
@@ -14,32 +14,26 @@
 #define SPLSH_TXT_CLR  Qt::white
 #define SPLSH_TXT_ALG  Qt::AlignRight|Qt::AlignBottom
 
-// For testing ////
-#include <QTime>
-#include <QDebug>
 void delay(unsigned int delay_sec)
 {
     QTime time;
-//    qDebug()<<delay_sec;
     time.start();
-   unsigned int i;
-    for (i=0; i<=delay_sec;)
+    for (unsigned int i = 0; i<=delay_sec;)
     {
-        qDebug()<<time.elapsed;
-        if(time.elapsed() > 1000)
+        if(time.elapsed() > 1)
         {
-            qDebug()<<"ELAPSED";
             time.start();
             qApp->processEvents(QEventLoop::AllEvents);
-            ++i;
+            i++;
         }
     }
 }
-// End ////
 
 bool camsFound()
 {
-    //Searching for connected cameras
+    bool res = false;
+    // Searching for cameras
+    return res;
 }
 
 bool downloadingCath()
